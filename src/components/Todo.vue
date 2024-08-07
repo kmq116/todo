@@ -93,7 +93,6 @@ watch(todos, () => {
 // Function to sort todos based on their creation timestamp
 
 const expandedDates = ref([])
-
 // Watcher to update grouped todos whenever the todos change
 // const groupedTodos = computed(() => {
 //
@@ -166,5 +165,9 @@ const toggleExpand = (date) => {
 .completed {
   text-decoration: line-through;
   color: #999;
+}
+
+/deep/ :where(.css-dev-only-do-not-override-wgbho4).ant-collapse .ant-collapse-content > .ant-collapse-content-box {
+  padding: 0;
 }
 </style>
