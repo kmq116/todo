@@ -12,16 +12,30 @@
           <a-collapse style="margin-top: 20px" :active-key="expandedDates.includes(date) ? [date] : []">
             <a-collapse-panel :header="date" @click.stop="toggleExpand(date)" :key="date">
               <a-list
+                  @click.stop
                   :dataSource="todosForDate"
                   :locale="{ emptyText: '该日期暂无Todo项' }"
               >
                 <template #renderItem="{ item }">
                   <a-list-item @click.stop>
                     <template #actions>
-                      <a-button type="link" @click="removeTodo(item)">删除</a-button>
+                      <a-button type="link" @click="item.isEditing = !item.isEditing">{{
+                          item.isEditing ? '保存' : '编辑'
+                        }}
+                      </a-button>
+                      <a-button type="link" @click="confirmRemoveTodo(item)">删除</a-button>
                     </template>
                     <a-checkbox v-model:checked="item.completed">
-                      <span :class="{ completed: item.completed }">{{ item.text }}</span>
+                      <span :class="{ completed: item.completed }">
+                         <a-input
+                             v-if="item.isEditing"
+                             v-model:value="item.text"
+                             @blur="updateTodo(item)"
+                             @keyup.enter="updateTodo(item)"
+                             style="width: 200px; display: inline-block;"
+                         />
+                        <span v-else>{{ item.text }}</span>
+                      </span>
                     </a-checkbox>
                   </a-list-item>
                 </template>
@@ -37,7 +51,7 @@
 <script setup>
 import {computed, ref, watch} from 'vue'
 import {useLocalStorage} from '@vueuse/core'
-import {message} from 'ant-design-vue'
+import {message, Modal} from 'ant-design-vue'
 import {v4 as uuidv4} from 'uuid';
 
 
@@ -101,6 +115,32 @@ const addTodo = () => {
   }
 }
 
+// 更新 Todo 项
+const updateTodo = (item) => {
+  if (item.text.trim()) {
+    item.isEditing = false // 保存后退出编辑状态
+    message.success('Todo项更新成功')
+  } else {
+    message.warning('请输入有效的Todo项')
+  }
+}
+
+
+// 新增确认删除函数
+const confirmRemoveTodo = (item) => {
+  Modal.confirm({
+    title: '确认删除',
+    content: '您确定要删除这个Todo项吗？',
+    okText: '确认',
+    cancelText: '取消',
+    onOk() {
+      removeTodo(item)
+    },
+    onCancel() {
+      message.info('已取消删除')
+    }
+  });
+}
 const removeTodo = (item) => {
   console.log(item)
   delete todos.value[item.id]
