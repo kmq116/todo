@@ -169,7 +169,7 @@ const toggleExpand = (date) => {
   color: #999;
 }
 
-/deep/ :where(.css-dev-only-do-not-override-wgbho4).ant-collapse .ant-collapse-content > .ant-collapse-content-box {
+:deep(:where(.css-dev-only-do-not-override-wgbho4).ant-collapse .ant-collapse-content > .ant-collapse-content-box) {
   padding: 0;
 }
 </style>
