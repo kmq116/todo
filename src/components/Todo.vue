@@ -49,7 +49,7 @@
 </template>
 
 <script setup>
-import {computed, ref, watch} from 'vue'
+import {ref, watch} from 'vue'
 import {useLocalStorage} from '@vueuse/core'
 import {message, Modal} from 'ant-design-vue'
 import {v4 as uuidv4} from 'uuid';
@@ -63,7 +63,9 @@ watch(todos, () => {
 
   const grouped = {}
 
-  Object.values(todos.value).forEach(todo => {
+  Object.values(todos.value).sort((a, b) => {
+    return b.createTimeStamp - a.createTimeStamp
+  }).forEach(todo => {
     const date = new Date(todo.createTimeStamp).toLocaleDateString()
     if (!grouped[date]) {
       grouped[date] = []
