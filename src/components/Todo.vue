@@ -27,14 +27,15 @@
                     </template>
                     <a-checkbox v-model:checked="item.completed">
                       <span :class="{ completed: item.completed }">
-                         <a-input
+                         <a-textarea
                              v-if="item.isEditing"
                              v-model:value="item.text"
                              @blur="updateTodo(item)"
                              @keyup.enter="updateTodo(item)"
-                             style="width: 200px; display: inline-block;"
+                             style="width: 500px; display: inline-block;"
                          />
-                        <span v-else>{{ item.text }}</span>
+                        <div style="word-wrap: break-word;overflow-wrap: break-word;white-space: normal;width: 500px"
+                             v-else>{{ item.text }}</div>
                       </span>
                     </a-checkbox>
                   </a-list-item>
@@ -73,11 +74,11 @@ watch(todos, () => {
     grouped[date].push(todo)
   })
   console.log(Object.values(grouped).length)
-  console.log(Object.values(grouped).sort(), '---')
+  console.warn(Object.values(grouped).sort(), '---')
   Object.values(grouped).forEach(ls => {
     ls.sort((a, b) => {
           console.log(a, b)
-          if (!a.completed) return -1
+          if (a.completed) return 1
           else {
             console.log(a.createTimeStamp - b.createTimeStamp)
             return a.createTimeStamp - b.createTimeStamp
